@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket DJ - Preset Control</title>
+    <style>
+        /* สไตล์ Dark Mode สำหรับบรรยากาศปาร์ตี้ */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #00ffcc;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        /* การ์ด Preset */
+        .preset-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            overflow: hidden;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        /* ส่วนวิดีโอ */
+        .video-box {
+            width: 100%;
+            background: #000;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ส่วนเนื้อหา */
+        .card-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .mode-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ffcc;
+        }
+
+        .code-display {
+            background: #000;
+            color: #00ff88;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            word-break: break-all;
+            border: 1px dashed #444;
+        }
+
+        /* ปุ่ม Copy */
+        .copy-button {
+            background: linear-gradient(135deg, #00ffcc 0%, #00aaff 100%);
+            color: #000;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+        }
+
+        .copy-button:active {
+            transform: scale(0.96);
+            filter: brightness(1.2);
+        }
+
+        /* Toast แจ้งเตือน */
+        #notification {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #ffffff;
+            color: #000;
+            text-align: center;
+            border-radius: 50px;
+            padding: 12px;
+            position: fixed;
+            z-index: 10;
+            bottom: 40px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        #notification.show {
+            visibility: visible;
+            animation: slideUp 0.4s, fadeOut 0.4s 2.5s forwards;
+        }
+
+        @keyframes slideUp { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <h1>Pocket DJ Console</h1>
+    <div class="subtitle">เลือก Preset แล้วไปวางใน Bluetooth Terminal</div>
+
+    <div class="preset-card">
+        <div class="video-box">
+            <video autoplay loop muted playsinline>
+                <source src="demo-light.mp4" type="video/mp4">
+                วิดีโอไม่รองรับบนเบราว์เซอร์นี้
+            </video>
+        </div>
+        
+        <div class="card-content">
+            <div class="mode-title">🌈 Rainbow Party Mode</div>
+            <div class="code-display" id="cmdText">5(0010,ab,re,u3000,1)(0810,cd,wh,u3000,1)(1210,gh,bl,u3000,1)</div>
+            
+            <button class="copy-button" onclick="copyCode()">
+                คัดลอกคำสั่ง (COPY)
+            </button>
+        </div>
+    </div>
+    <div id="notification">คัดลอกเรียบร้อย! ⚡</div>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById('cmdText').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const toast = document.getElementById("notification");
+                toast.className = "show";
+                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+            }).catch(err => {
+                console.error('ไม่สามารถคัดลอกได้', err);
+            });
+        }
+    </script>
+
+</body>
+</html>
